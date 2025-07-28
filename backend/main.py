@@ -1,0 +1,109 @@
+from fastapi import FastAPI, HTTPException, Depends
+from sqlalchemy.orm import Session
+from database import SessionLocal, engine
+from models import Base, Order, Product, Fleet, Driver
+from schemas import (
+    ProductCreate,
+    ProductModel,
+    OrderCreate,
+    OrderModel,
+    FleetCreate,
+    FleetModel,
+    DriverCreate,
+    DriverModel,
+)
+
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+@app.post("/products/", response_model=ProductModel)
+def create_product(product: ProductCreate, db: Session = Depends(get_db)):
+    db_product = Product(**product.dict())
+    db.add(db_product)
+    db.commit()
+    db.refresh(db_product)
+    return db_product
+
+
+@app.get("/products/", response_model=list[ProductModel])
+def read_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    products = db.query(Product).offset(skip).limit(limit).all()
+    return products
+
+
+@app.post("/orders/webhook/", response_model=OrderModel)
+def create_order(order: OrderCreate, db: Session = Depends(get_db)):
+    db_order = Order(**order.dict())
+    db.add(db_order)
+    db.commit()
+    db.refresh(db_order)
+    return db_order
+
+
+@app.get("/orders/", response_model=list[OrderModel])
+def read_orders(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    orders = db.query(Order).offset(skip).limit(limit).all()
+    return orders
+
+
+@app.post("/fleets/", response_model=FleetModel)
+def create_fleet(fleet: FleetCreate, db: Session = Depends(get_db)):
+    db_fleet = Fleet(**fleet.dict())
+    db.add(db_fleet)
+    db.commit()
+    db.refresh(db_fleet)
+    return db_fleet
+
+
+@app.get("/fleets/", response_model=list[FleetModel])
+def read_fleets(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    fleets = db.query(Fleet).offset(skip).limit(limit).all()
+    return fleets
+
+
+@app.post("/drivers/", response_model=DriverModel)
+def create_driver(driver: DriverCreate, db: Session = Depends(get_db)):
+    db_driver = Driver(**driver.dict())
+    db.add(db_driver)
+    db.commit()
+    db.refresh(db_driver)
+    return db_driver
+
+
+@app.get("/drivers/", response_model=list[DriverModel])
+def read_drivers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    drivers = db.query(Driver).offset(skip).limit(limit).all()
+    return drivers
+
+
+@app.post("/assign_fleet/")
+def assign_fleet(order_id: str, fleet_id: int, db: Session = Depends(get_db)):
+    order = db.query(Order).filter(Order.order_id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    order.fleet_id = fleet_id
+    order.status = "assigned"
+    db.commit()
+    return {"message": "Order assigned to fleet successfully"}
+
+
+@app.post("/update_status/")
+def update_status(order_id: str, status: str, db: Session = Depends(get_db)):
+    order = db.query(Order).filter(Order.order_id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    order.status = status
+    db.commit()
+    return {"message": "Order status updated successfully"}
