@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Logistics Service</title>
+  <link rel="stylesheet" href="OrderPage.css" />
+</head>
+<body>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <button onclick="togglesidebar()">/|\</button>
+        <span class="app-name">LogiTrack</span>
+       </div>
+   <ul class="menu">
+    <li><a href="index.html">Dashboard</a></li>
+    <li><a href="Orderpage.html">Orders</a></li>
+    <li><a href="FleetPage.html">Fleet</a></li>
+    <li><a href="reports.html">Reports</a></li>
+    <li><a href="#">Settings</a></li>
+   </ul>
+</div>
+
+  <div class="order-container">
+    <!-- Filter Controls -->
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Search by Order ID or Customer">
+      <select id="statusFilter">
+        <option value="all">All Statuses</option>
+        <option value="delivered">Delivered</option>
+        <option value="transit">In Transit</option>
+        <option value="pending">Pending</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="cards" id="orderCards">
+      <!-- Repeated Order Cards -->
+      <div class="order-card" data-status="delivered">
+        <h3>#ORD001</h3>
+        <p><strong>Customer:</strong> Oluchi Nwankwo</p>
+        <p><strong>Destination:</strong> Lagos</p>
+        <span class="badge delivered">Delivered</span>
+      </div>
+      <div class="order-card" data-status="transit">
+        <h3>#ORD002</h3>
+        <p><strong>Customer:</strong> Tunde Akin</p>
+        <p><strong>Destination:</strong> Abuja</p>
+        <span class="badge transit">In Transit</span>
+      </div>
+      <div class="order-card" data-status="pending">
+        <h3>#ORD003</h3>
+        <p><strong>Customer:</strong> Bola Ogun</p>
+        <p><strong>Destination:</strong> Port Harcourt</p>
+        <span class="badge pending">Pending</span>
+      </div>
+      <div class="order-card" data-status="cancelled">
+        <h3>#ORD004</h3>
+        <p><strong>Customer:</strong> Fatima Musa</p>
+        <p><strong>Destination:</strong> Kano</p>
+        <span class="badge cancelled">Cancelled</span>
+      </div>
+      <div class="order-card" data-status="delivered">
+        <h3>#ORD005</h3>
+        <p><strong>Customer:</strong> Joseph Edem</p>
+        <p><strong>Destination:</strong> Ibadan</p>
+        <span class="badge delivered">Delivered</span>
+      </div>
+      <div class="order-card" data-status="transit">
+        <h3>#ORD006</h3>
+        <p><strong>Customer:</strong> Amina Bello</p>
+        <p><strong>Destination:</strong> Enugu</p>
+        <span class="badge transit">In Transit</span>
+      </div>
+      <div class="order-card" data-status="pending">
+        <h3>#ORD007</h3>
+        <p><strong>Customer:</strong> Samuel Nwachukwu</p>
+        <p><strong>Destination:</strong> Benin City</p>
+        <span class="badge pending">Pending</span>
+      </div>
+      <div class="order-card" data-status="delivered">
+        <h3>#ORD008</h3>
+        <p><strong>Customer:</strong> Grace Ajayi</p>
+        <p><strong>Destination:</strong> Ilorin</p>
+        <span class="badge delivered">Delivered</span>
+      </div>
+      <div class="order-card" data-status="cancelled">
+        <h3>#ORD009</h3>
+        <p><strong>Customer:</strong> John Danjuma</p>
+        <p><strong>Destination:</strong> Uyo</p>
+        <span class="badge cancelled">Cancelled</span>
+      </div>
+      <div class="order-card" data-status="transit">
+        <h3>#ORD010</h3>
+        <p><strong>Customer:</strong> Chinwe Okeke</p>
+        <p><strong>Destination:</strong> Owerri</p>
+        <span class="badge transit">In Transit</span>
+      </div>
+      <!-- Add more cards here as needed -->
+    </div>
+  </div>
+
+<script src="index.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
+  
