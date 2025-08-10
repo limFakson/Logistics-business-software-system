@@ -1,4 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
 from models import Base, Order, Product, Fleet, Driver
@@ -26,7 +29,17 @@ def get_db():
         db.close()
 
 
-@app.post("/products/", response_model=ProductModel)
+# Serve static files from ./frontend
+app.mount("/static", StaticFiles(directory="."), name="static")
+
+
+# Serve index.html at root
+@app.get("/")
+def read_index():
+    return FileResponse("index.html")
+
+
+@app.post("/api/products/", response_model=ProductModel)
 def create_product(product: ProductCreate, db: Session = Depends(get_db)):
     db_product = Product(**product.dict())
     db.add(db_product)
@@ -35,13 +48,13 @@ def create_product(product: ProductCreate, db: Session = Depends(get_db)):
     return db_product
 
 
-@app.get("/products/", response_model=list[ProductModel])
+@app.get("/api/products/", response_model=list[ProductModel])
 def read_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     products = db.query(Product).offset(skip).limit(limit).all()
     return products
 
 
-@app.post("/orders/webhook/", response_model=OrderModel)
+@app.post("/api/orders/webhook/", response_model=OrderModel)
 def create_order(order: OrderCreate, db: Session = Depends(get_db)):
     db_order = Order(**order.dict())
     db.add(db_order)
@@ -50,13 +63,13 @@ def create_order(order: OrderCreate, db: Session = Depends(get_db)):
     return db_order
 
 
-@app.get("/orders/", response_model=list[OrderModel])
+@app.get("/api/orders/", response_model=list[OrderModel])
 def read_orders(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     orders = db.query(Order).offset(skip).limit(limit).all()
     return orders
 
 
-@app.post("/fleets/", response_model=FleetModel)
+@app.post("/api/fleets/", response_model=FleetModel)
 def create_fleet(fleet: FleetCreate, db: Session = Depends(get_db)):
     db_fleet = Fleet(**fleet.dict())
     db.add(db_fleet)
@@ -65,13 +78,13 @@ def create_fleet(fleet: FleetCreate, db: Session = Depends(get_db)):
     return db_fleet
 
 
-@app.get("/fleets/", response_model=list[FleetModel])
+@app.get("/api/fleets/", response_model=list[FleetModel])
 def read_fleets(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     fleets = db.query(Fleet).offset(skip).limit(limit).all()
     return fleets
 
 
-@app.post("/drivers/", response_model=DriverModel)
+@app.post("/api/drivers/", response_model=DriverModel)
 def create_driver(driver: DriverCreate, db: Session = Depends(get_db)):
     db_driver = Driver(**driver.dict())
     db.add(db_driver)
@@ -80,13 +93,13 @@ def create_driver(driver: DriverCreate, db: Session = Depends(get_db)):
     return db_driver
 
 
-@app.get("/drivers/", response_model=list[DriverModel])
+@app.get("/api/drivers/", response_model=list[DriverModel])
 def read_drivers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     drivers = db.query(Driver).offset(skip).limit(limit).all()
     return drivers
 
 
-@app.post("/assign_fleet/")
+@app.post("/api/assign_fleet/")
 def assign_fleet(order_id: str, fleet_id: int, db: Session = Depends(get_db)):
     order = db.query(Order).filter(Order.order_id == order_id).first()
     if not order:
@@ -98,7 +111,7 @@ def assign_fleet(order_id: str, fleet_id: int, db: Session = Depends(get_db)):
     return {"message": "Order assigned to fleet successfully"}
 
 
-@app.post("/update_status/")
+@app.post("/api/update_status/")
 def update_status(order_id: str, status: str, db: Session = Depends(get_db)):
     order = db.query(Order).filter(Order.order_id == order_id).first()
     if not order:

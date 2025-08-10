@@ -18,7 +18,9 @@ class ProductModel(ProductBase):
 
 
 class OrderBase(BaseModel):
-    order_id: str
+    order_name: str
+    customer_name: str
+    destination: str
     product_id: int
 
 
@@ -38,6 +40,8 @@ class OrderModel(OrderBase):
 class FleetBase(BaseModel):
     name: str
     driver_id: int
+    status: str
+    last_maintenance: str
 
 
 class FleetCreate(FleetBase):

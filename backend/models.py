@@ -6,8 +6,10 @@ from database import Base
 class Order(Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True, index=True)
-    order_id = Column(String, unique=True, index=True)
+    order_name = Column(String, index=True)
     product_id = Column(Integer, ForeignKey("products.id"))
+    customer_name = Column(String, index=True)
+    destination = Column(String, index=True)
     status = Column(String, default="pending")
     fleet_id = Column(Integer, ForeignKey("fleets.id"))
 
@@ -29,6 +31,8 @@ class Fleet(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     driver_id = Column(Integer, ForeignKey("drivers.id"))
+    status = Column(String, index=True)
+    last_maintenance = Column(String, index=True)
 
     driver = relationship("Driver", back_populates="fleets")
     orders = relationship("Order", back_populates="fleet")
