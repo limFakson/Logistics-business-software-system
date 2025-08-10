@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="nav.css">
 </head>
 <body>
-
+<div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <button onclick="togglesidebar()">/|\</button>
@@ -18,7 +19,7 @@
         <li><a href="Orderpage.html">Orders</a></li>
         <li><a href="FleetPage.html">Fleet</a></li>
         <li><a href="reports.html">Reports</a></li>
-        <li><a href="#">Settings</a></li>
+        <li><a href="SettingPage.html">Settings</a></li>
        </ul>
     </div>
 
@@ -43,6 +44,13 @@
         </div>
       </div>
     </div>
+  
+    <div id="data" style="margin-left: 250px;">
+      <h3 id="email"></h3>
+      <p id="wallet"></p>
+    </div>
+
     <script src="index.js"></script>
+    <script src="api.js"></script>
 </body>
 </html>

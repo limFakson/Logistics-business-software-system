@@ -1,0 +1,150 @@
+
+.settings-container {
+  margin: 10px;
+  padding: 40px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+header h1 {
+  font-size: 2rem;
+  color: #0c3c78;
+}
+
+header p {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.setting-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 25px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  margin-bottom: 30px;
+}
+
+.setting-card h2 {
+  margin-bottom: 20px;
+  color: #007bff;
+  border-left: 4px solid #007bff;
+  padding-left: 10px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+label {
+  display: block;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* Toggle Switch */
+.toggle-label {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.toggle-label input {
+  display: none;
+}
+
+.slider {
+  width: 50px;
+  height: 26px;
+  background: #ccc;
+  border-radius: 50px;
+  position: relative;
+  transition: 0.3s;
+}
+
+.slider::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  background: white;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.toggle-label input:checked + .slider {
+  background: #28a745;
+}
+
+.toggle-label input:checked + .slider::before {
+  transform: translateX(24px);
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+button {
+  /* padding: 10px 20px; */
+  border: none;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.4s ease-in-out;
+}
+.button{
+  padding: 10px 20px;
+}
+
+.save {
+  background-color: #007bff;
+  color: white;
+}
+
+.save:hover {
+  background-color: #0056b3;
+}
+
+.cancel {
+  background-color: #dc3545;
+  color: white;
+}
+
+.cancel:hover {
+  background-color: #b02a37;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+}

@@ -4,77 +4,6 @@
     box-sizing: border-box;
 }
 
-body {
-    background: linear-gradient(to top, rgb(173, 66, 66),
-     rgb(243, 92, 92), rgb(192, 108, 59)) ;
-    background-repeat: no-repeat;
-    background-size: cover;
-    height: 100vh;
-}
-
-.sidebar {
-    height: 100vh;
-    width: 200px;
-    background-color: rgb(230, 100, 100);
-    padding: 20px 15px;
-    position: fixed;
-    left: 0;
-    top: 0;
-    transition: width 0.3s;
-    overflow: hidden;
-}
-
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 30px;
-}
-
-
-.sidebar-header button {
-    font-size: 25px;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-.app-name {
-    font-size: 25px;
-    font-weight: bold;
-}
-
-.menu li {
-    list-style: none;
-    margin-bottom: 15px;
-}
-
-.menu li a {
-    font-size: 1.3rem;
-    text-decoration: none;
-    color:  rgb(248, 201, 201);
-    display: block;
-    transition: opacity 0.3s;
-}
-
-.sidebar.collapsed {
-    width: 47px;
-}
-
-
-
-.sidebar.collapsed .menu li a {
-    opacity: 0;
-    pointer-events: none;
-    height: 0;
-}
-
-.main-content {
-    margin-left: 205px;
-    padding: 20px;
-    transition: margin-left 0.5s ease;
-}
-
 .sidebar.sidebar.collapsed ~ .main-content {
     margin-left: 60px;
 }
@@ -86,7 +15,7 @@ body {
 }
 
 .report {
-    background:  rgb(230, 100, 100);
+    background:  rgb(143, 99, 99) ;
     box-shadow: 5px 5px 15px rgb(34, 33, 33);
     color: rgb(248, 201, 201);
     padding: 15px;
