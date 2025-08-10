@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <link rel="stylesheet" href="reports.css">
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <button onclick="togglesidebar()">/|\</button>
+            <span class="app-name">LogiTrack</span>
+           </div>
+       <ul class="menu">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="#">Orders</a></li>
+        <li><a href="#">Fleet</a></li>
+        <li><a href="reports.html">Reports</a></li>
+        <li><a href="#">Settings</a></li>
+       </ul>
+    </div>
+
+    <div class="main-content" id="main">
+      <h1>Monthly Reports</h1>
+      <div class="reports">
+        <div class="report">
+            <div>
+                <h3>June 2025</h3>
+                <p>Revenue,Deliveries,Fleet usage</p>
+            </div>
+            <button type="button">Download</button>
+        </div>
+        <div class="report">
+            <div>
+                <h3>May 2025</h3>
+                <p>Delivery insights,Operational cost</p>
+            </div>
+            <button type="button">Download</button>
+        </div>
+        <div class="report">
+            <div>
+                <h3>April 2025</h3>
+                <p>Performance metrics,Routes summary</p>
+            </div>
+            <button type="button">Download</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>
