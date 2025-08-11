@@ -37,6 +37,21 @@ class OrderModel(OrderBase):
         orm_mode = True
 
 
+class DriverBase(BaseModel):
+    name: str
+
+
+class DriverCreate(DriverBase):
+    pass
+
+
+class DriverModel(DriverBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
 class FleetBase(BaseModel):
     name: str
     driver_id: int
@@ -50,21 +65,7 @@ class FleetCreate(FleetBase):
 
 class FleetModel(FleetBase):
     id: int
-
-    class Config:
-        orm_mode = True
-
-
-class DriverBase(BaseModel):
-    name: str
-
-
-class DriverCreate(DriverBase):
-    pass
-
-
-class DriverModel(DriverBase):
-    id: int
+    driver_name: str
 
     class Config:
         orm_mode = True

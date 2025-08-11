@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 import os
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
@@ -20,6 +21,19 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:3000",  # for dev frontend
+    "http://127.0.0.1:8000",
+    "*",  # <-- allow all (if you're testing, remove in prod!)
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db():
     db = SessionLocal()
@@ -81,6 +95,9 @@ def create_fleet(fleet: FleetCreate, db: Session = Depends(get_db)):
 @app.get("/api/fleets/", response_model=list[FleetModel])
 def read_fleets(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     fleets = db.query(Fleet).offset(skip).limit(limit).all()
+    for fleet in fleets:
+        driver_name = db.query(Driver).filter(Driver.id == fleet.driver_id).first().name
+        fleet.driver_name = driver_name
     return fleets
 
 
