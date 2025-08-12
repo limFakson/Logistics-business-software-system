@@ -35,42 +35,47 @@ Before running this application, make sure you have:
 ## 🚀 Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/limFakson/Logistics-business-software-system.git
    cd Logistics-business-software-system
    ```
 
 2. **Create a virtual environment**
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
 3. **Install dependencies**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **Run the application**
+
    ```bash
    uvicorn main:app --reload
    ```
 
 5. **Access the API**
    - API Base URL: `http://localhost:8000`
-   - Interactive Documentation: `http://localhost:8000/docs`
-   - Alternative Docs: `http://localhost:8000/redoc`
+   - Interactive Documentation: `https://logitrack-w83a.onrender.com/docs`
+   - Alternative Docs: `https://logitrack-w83a.onrender.com/redoc`
 
 ## 📚 API Documentation
 
 ### Products Management
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/products/` | Create a new product |
-| GET | `/products/` | List all products with pagination |
+| Method | Endpoint     | Description                       |
+| ------ | ------------ | --------------------------------- |
+| POST   | `/products/` | Create a new product              |
+| GET    | `/products/` | List all products with pagination |
 
 **Create Product Example:**
+
 ```json
 {
   "name": "Laptop",
@@ -79,17 +84,19 @@ Before running this application, make sure you have:
 ```
 
 **Query Parameters for GET:**
+
 - `skip` (int): Number of records to skip (default: 0)
 - `limit` (int): Maximum records to return (default: 100)
 
 ### Order Management
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/orders/webhook/` | Create a new order via webhook |
-| GET | `/orders/` | List all orders |
+| Method | Endpoint           | Description                    |
+| ------ | ------------------ | ------------------------------ |
+| POST   | `/orders/webhook/` | Create a new order via webhook |
+| GET    | `/orders/`         | List all orders                |
 
 **Create Order Example:**
+
 ```json
 {
   "order_name": "Order-123",
@@ -100,12 +107,13 @@ Before running this application, make sure you have:
 
 ### Fleet Management
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/fleets/` | Create a new fleet |
-| GET | `/fleets/` | List all fleets |
+| Method | Endpoint   | Description        |
+| ------ | ---------- | ------------------ |
+| POST   | `/fleets/` | Create a new fleet |
+| GET    | `/fleets/` | List all fleets    |
 
 **Create Fleet Example:**
+
 ```json
 {
   "name": "Fleet-A",
@@ -117,12 +125,13 @@ Before running this application, make sure you have:
 
 ### Driver Management
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/drivers/` | Create a new driver |
-| GET | `/drivers/` | List all drivers |
+| Method | Endpoint    | Description         |
+| ------ | ----------- | ------------------- |
+| POST   | `/drivers/` | Create a new driver |
+| GET    | `/drivers/` | List all drivers    |
 
 **Create Driver Example:**
+
 ```json
 {
   "name": "John Doe"
@@ -131,11 +140,12 @@ Before running this application, make sure you have:
 
 ### Fleet Assignment
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/assign_fleet/` | Assign a fleet to an order |
+| Method | Endpoint         | Description                |
+| ------ | ---------------- | -------------------------- |
+| POST   | `/assign_fleet/` | Assign a fleet to an order |
 
 **Request Example:**
+
 ```json
 {
   "order_id": "Order-123",
@@ -144,6 +154,7 @@ Before running this application, make sure you have:
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Order assigned to fleet successfully"
@@ -152,11 +163,12 @@ Before running this application, make sure you have:
 
 ### Status Updates
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/update_status/` | Update order status |
+| Method | Endpoint          | Description         |
+| ------ | ----------------- | ------------------- |
+| POST   | `/update_status/` | Update order status |
 
 **Request Example:**
+
 ```json
 {
   "order_id": "Order-123",
@@ -165,6 +177,7 @@ Before running this application, make sure you have:
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Order status updated successfully"
@@ -188,15 +201,17 @@ Logistics-business-software-system/
 ### Creating a Complete Logistics Workflow
 
 1. **Create a Driver**
+
    ```bash
-   curl -X POST "http://localhost:8000/drivers/" \
+   curl -X POST "https://logitrack-w83a.onrender.com/drivers/" \
         -H "Content-Type: application/json" \
         -d '{"name": "John Smith"}'
    ```
 
 2. **Create a Fleet**
+
    ```bash
-   curl -X POST "http://localhost:8000/fleets/" \
+   curl -X POST "https://logitrack-w83a.onrender.com/fleets/" \
         -H "Content-Type: application/json" \
         -d '{
           "name": "Delivery Truck 01",
@@ -207,15 +222,17 @@ Logistics-business-software-system/
    ```
 
 3. **Create a Product**
+
    ```bash
-   curl -X POST "http://localhost:8000/products/" \
+   curl -X POST "https://logitrack-w83a.onrender.com/products/" \
         -H "Content-Type: application/json" \
         -d '{"name": "Electronics Package", "quantity": 50}'
    ```
 
 4. **Create an Order**
+
    ```bash
-   curl -X POST "http://localhost:8000/orders/webhook/" \
+   curl -X POST "https://logitrack-w83a.onrender.com/orders/webhook/" \
         -H "Content-Type: application/json" \
         -d '{
           "order_name": "ORD-2025-001",
@@ -225,15 +242,16 @@ Logistics-business-software-system/
    ```
 
 5. **Assign Fleet to Order**
+
    ```bash
-   curl -X POST "http://localhost:8000/assign_fleet/" \
+   curl -X POST "https://logitrack-w83a.onrender.com/assign_fleet/" \
         -H "Content-Type: application/json" \
         -d '{"order_id": "ORD-2025-001", "fleet_id": 1}'
    ```
 
 6. **Update Order Status**
    ```bash
-   curl -X POST "http://localhost:8000/update_status/" \
+   curl -X POST "https://logitrack-w83a.onrender.com/update_status/" \
         -H "Content-Type: application/json" \
         -d '{"order_id": "ORD-2025-001", "status": "in_transit"}'
    ```
@@ -250,11 +268,13 @@ The application can be configured through environment variables:
 ## 🧪 Testing
 
 Run the test suite:
+
 ```bash
 pytest tests/
 ```
 
 For test coverage:
+
 ```bash
 pytest --cov=app tests/
 ```
@@ -262,6 +282,7 @@ pytest --cov=app tests/
 ## 🚀 Deployment
 
 ### Docker Deployment
+
 ```dockerfile
 FROM python:3.9-slim
 
@@ -276,6 +297,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
 ### Production Setup
+
 ```bash
 # Install production ASGI server
 pip install gunicorn
@@ -297,6 +319,7 @@ gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker
 All API responses follow a consistent format:
 
 **Success Response:**
+
 ```json
 {
   "status": "success",
@@ -306,6 +329,7 @@ All API responses follow a consistent format:
 ```
 
 **Error Response:**
+
 ```json
 {
   "status": "error",
@@ -341,6 +365,7 @@ All API responses follow a consistent format:
 ## 📞 Support
 
 For support and questions:
+
 - Create an issue on GitHub
 - Contact: [Repository Owner](https://github.com/limFakson)
 
@@ -351,6 +376,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🔄 Changelog
 
 ### v1.0.0
+
 - Initial release
 - Basic CRUD operations for all entities
 - Fleet assignment functionality

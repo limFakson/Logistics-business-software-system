@@ -20,7 +20,7 @@
     <ul class="menu">
       <li><a href="index.html">Dashboard</a></li>
       <li><a href="Orderpage.html">Orders</a></li>
-      <li ><a href="FleetPage.html" class="active">Fleet</a></li>
+      <li><a href="FleetPage.html" class="active">Fleet</a></li>
       <li><a href="reports.html">Reports</a></li>
       <li><a href="SettingPage.html">Settings</a></li>
     </ul>
@@ -49,7 +49,7 @@
       container.innerHTML = "<p class='loading'>Loading fleet data...</p>";
 
       try {
-        const res = await fetch("http://localhost:8000/api/fleets/");
+        const res = await fetch("https://logitrack-w83a.onrender.com/api/fleets/");
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
         const fleets = await res.json();

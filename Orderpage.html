@@ -73,7 +73,7 @@
       container.innerHTML = "<p>Loading orders...</p>";
 
       try {
-        const res = await fetch("http://localhost:8000/api/orders/");
+        const res = await fetch("https://logitrack-w83a.onrender.com/api/orders/");
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
         const orders = await res.json();
@@ -97,7 +97,7 @@
           card.addEventListener("click", () => {
             if (order.fleet_id && order.fleet_id !== 0) {
               // Fleet assigned → show details
-              fetch(`http://localhost:8000/api/fleets/`)
+              fetch(`https://logitrack-w83a.onrender.com/api/fleets/`)
                 .then(res => res.json())
                 .then(fleets => {
                   const fleet = fleets.find(f => f.id === order.fleet_id);
@@ -113,14 +113,14 @@
                 });
             } else {
               // No fleet assigned → show assignment dropdown
-              fetch(`http://localhost:8000/api/fleets/`)
+              fetch(`https://logitrack-w83a.onrender.com/api/fleets/`)
                 .then(res => res.json())
                 .then(fleets => {
                   const select = document.getElementById("fleetSelect");
                   select.innerHTML = fleets.map(f => `<option value="${f.id}">${f.name} - ${f.driver_name}</option>`).join("");
                   document.getElementById("assignFleetBtn").onclick = () => {
                     const fleetId = select.value;
-                    fetch(`http://localhost:8000/api/assign_fleet/`, {
+                    fetch(`https://logitrack-w83a.onrender.com/api/assign_fleet/`, {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ order_id: order.order_id, fleet_id: parseInt(fleetId) })

@@ -388,7 +388,7 @@
     // Try to fetch from API, fallback to demo data
     async function loadDashboard() {
       try {
-        const response = await fetch("http://localhost:8000/api/dashboard");
+        const response = await fetch("https://logitrack-w83a.onrender.com/api/dashboard");
         if (response.ok) {
           const data = await response.json();
           // If real API data structure matches, use it

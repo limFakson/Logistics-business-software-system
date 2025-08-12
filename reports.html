@@ -87,7 +87,7 @@
         async function downloadReport(reportId) {
             try {
                 // Example endpoint (adjust to your API):
-                const url = `http://localhost:8000/api/reports/download?report_id=${encodeURIComponent(reportId)}`;
+                const url = `https://logitrack-w83a.onrender.com/api/reports/download?report_id=${encodeURIComponent(reportId)}`;
 
                 const res = await fetch(url, { method: 'GET' });
                 if (!res.ok) throw new Error('Server error: ' + res.status);
@@ -110,7 +110,7 @@
         // Preview handler — fetch summary or HTML snippet
         async function previewReport(reportId) {
             try {
-                const url = `http://localhost:8000/api/reports/preview?report_id=${encodeURIComponent(reportId)}`;
+                const url = `https://logitrack-w83a.onrender.com/api/reports/preview?report_id=${encodeURIComponent(reportId)}`;
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('Server error: ' + res.status);
                 const html = await res.text(); // assume server returns HTML snippet or plaintext
@@ -148,7 +148,7 @@
         // Optional: replace static cards with real data from API
         async function loadReportsFromApi() {
             try {
-                const res = await fetch('http://localhost:8000/api/reports/list');
+                const res = await fetch('https://logitrack-w83a.onrender.com/api/reports/list');
                 if (!res.ok) return;
                 const reports = await res.json();
                 const grid = document.getElementById('reportsGrid');
