@@ -3,37 +3,28 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import os
+from collections import Counter, defaultdict
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
-from models import Base, Order, Product, Fleet, Driver
-from schemas import (
-    ProductCreate,
-    ProductModel,
-    OrderCreate,
-    OrderModel,
-    FleetCreate,
-    FleetModel,
-    DriverCreate,
-    DriverModel,
-)
+from models import Base, Order, Product, Fleet, Driver, Report, Shipment, Route
+from schemas import *
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",  # for dev frontend
-    "http://127.0.0.1:8000",
     "*",  # <-- allow all (if you're testing, remove in prod!)
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_credentials=True,  # Allow cookies and other credentials to be sent with requests
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Allow all headers to be sent in the request
 )
+
 
 def get_db():
     db = SessionLocal()
@@ -137,3 +128,147 @@ def update_status(order_id: str, status: str, db: Session = Depends(get_db)):
     order.status = status
     db.commit()
     return {"message": "Order status updated successfully"}
+
+
+@app.post("/api/reports/", response_model=ReportModel)
+def create_report(report: ReportCreate, db: Session = Depends(get_db)):
+    new_report = Report(**report.dict())
+    db.add(new_report)
+    db.commit()
+    db.refresh(new_report)
+    return new_report
+
+
+@app.get("/api/reports/", response_model=list[ReportModel])
+def get_reports(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    return db.query(Report).offset(skip).limit(limit).all()
+
+
+@app.get("/api/reports/{report_id}", response_model=ReportModel)
+def get_report(report_id: int, db: Session = Depends(get_db)):
+    report = db.query(Report).filter(Report.id == report_id).first()
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found")
+    return report
+
+
+@app.delete("/api/reports/{report_id}")
+def delete_report(report_id: int, db: Session = Depends(get_db)):
+    report = db.query(Report).filter(Report.id == report_id).first()
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found")
+    db.delete(report)
+    db.commit()
+    return {"message": "Report deleted successfully"}
+
+
+@app.get("/api/dashboard", response_model=DashboardResponse)
+def get_dashboard(db: Session = Depends(get_db), months_count: int = 6):
+    """
+    Returns:
+      - KPIs (total orders, deliveries, pending, revenue)
+      - Charts data (months array, shipments per month, status counts [delivered, delayed])
+      - Tables: recent shipments and top routes
+    """
+    shipments: list[Shipment] = db.query(Shipment).order_by(Shipment.shipped_at).all()
+
+    # KPIs
+    total_orders = len(shipments)
+    deliveries = sum(1 for s in shipments if s.status.lower() == "delivered")
+    pending = sum(1 for s in shipments if s.status.lower() == "pending")
+    revenue = sum((s.revenue or 0.0) for s in shipments)
+
+    # Charts: last N months (includes months with 0)
+    now = datetime.utcnow()
+    months = []
+    for i in range(months_count - 1, -1, -1):
+        m = (now.replace(day=1) - __relativedelta_months(i)).strftime("%b %Y")
+        months.append(m)
+
+    # Count shipments per month:
+    # map "Mon YYYY" -> count
+    month_counts = defaultdict(int)
+    for s in shipments:
+        if s.shipped_at:
+            key = s.shipped_at.strftime("%b %Y")
+            month_counts[key] += 1
+
+    shipments_per_month = [month_counts.get(m, 0) for m in months]
+
+    # status counts: delivered vs delayed (if you want on-time vs delayed)
+    delivered_count = sum(1 for s in shipments if s.status.lower() == "delivered")
+    delayed_count = sum(1 for s in shipments if s.status.lower() == "delayed")
+    status_counts = [delivered_count, delayed_count]
+
+    # Recent Shipments (latest 8)
+    recent_q = db.query(Shipment).order_by(Shipment.created_at.desc()).limit(8).all()
+    recent_shipments = [ShipmentModel.from_orm(s) for s in recent_q]
+
+    # Top routes
+    route_counter = Counter()
+    for s in shipments:
+        route_name = s.route.name if s.route else "Unknown"
+        route_counter[route_name] += 1
+    top_routes = [{"route": r, "count": c} for r, c in route_counter.most_common(6)]
+
+    return {
+        "kpis": {
+            "totalOrders": total_orders,
+            "deliveries": deliveries,
+            "pending": pending,
+            "revenue": round(revenue, 2),
+        },
+        "charts": {
+            "months": months,
+            "shipmentsPerMonth": shipments_per_month,
+            "statusCounts": status_counts,
+        },
+        "tables": {"recentShipments": recent_shipments, "topRoutes": top_routes},
+    }
+
+
+# helper to step months (small utility)
+def __relativedelta_months(months: int):
+    """
+    returns a datetime.timedelta-like object to subtract months from a date by
+    (we'll implement as a small helper that returns a replacement datetime).
+    In the query usage above we just need something subtractable from a date.
+    But to keep it simple/hard-coded we can implement month arithmetic here:
+    """
+
+    # We'll return a function-like object with __rsub__ support.
+    class _RD:
+        def __init__(self, months):
+            self.months = months
+
+        def __rsub__(self, dt):
+            # dt - _RD -> result datetime
+            year = dt.year
+            month = dt.month - self.months
+            # adjust
+            while month <= 0:
+                month += 12
+                year -= 1
+            # keep day 1
+            return dt.replace(year=year, month=month, day=1)
+
+    return _RD(months)
+
+
+# Optional smaller endpoints
+@app.get("/api/shipments/recent", response_model=list[ShipmentModel])
+def get_recent_shipments(limit: int = 8, db: Session = Depends(get_db)):
+    q = db.query(Shipment).order_by(Shipment.created_at.desc()).limit(limit).all()
+    return [ShipmentModel.from_orm(s) for s in q]
+
+
+@app.get("/api/routes/top")
+def get_top_routes(limit: int = 6, db: Session = Depends(get_db)):
+    shipments = db.query(Shipment).all()
+    from collections import Counter
+
+    counter = Counter()
+    for s in shipments:
+        name = s.route.name if s.route else "Unknown"
+        counter[name] += 1
+    return [{"route": r, "count": c} for r, c in counter.most_common(limit)]

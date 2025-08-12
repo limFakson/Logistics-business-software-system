@@ -4,13 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Logistics Service</title>
+  <title>Logistics Service - Fleet</title>
   <link rel="stylesheet" href="FleetPage.css" />
   <link rel="stylesheet" href="nav.css">
 </head>
 
-<body>
+<body class="main">
 
+  <!-- Sidebar Navigation -->
   <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <button onclick="togglesidebar()">/|\</button>
@@ -19,129 +20,77 @@
     <ul class="menu">
       <li><a href="index.html">Dashboard</a></li>
       <li><a href="Orderpage.html">Orders</a></li>
-      <li><a href="FleetPage.html">Fleet</a></li>
+      <li ><a href="FleetPage.html" class="active">Fleet</a></li>
       <li><a href="reports.html">Reports</a></li>
       <li><a href="SettingPage.html">Settings</a></li>
     </ul>
   </div>
 
-  <div class="page">
-    <h2>🚛 Fleet Overview</h2>
-    <div class="fleet-grid" id="fleetGrid">
+  <!-- Main Content -->
+  <div class="page main-content">
+    <h2 class="page-title">🚛 Fleet Overview</h2>
+    <div class="fleet-grid" id="fleetGrid"></div>
+  </div>
 
-      <!-- <div class="truck-card">
-            <h3>Truck #A001</h3>
-            <p>Driver: James Okoro</p>
-            <p>Status: <span id="status" class="active">Act statusive</span></p>
-            <p>Last Maintenance: June 2025</p>
-          </div>
-      
-          <div class="truck-card">
-            <h3>Truck #A002</h3>
-            <p>Driver: Fatima Bello</p>
-            <p>Status: <span id="status" class="maintenance status">In Maintenance</span></p>
-            <p>Last Maintenance: July 2025</p>
-          </div>
-      
-          <div class="truck-card">
-            <h3>Truck #B015</h3>
-            <p>Driver: Daniel Musa</p>
-            <p>Status: <span id="status" class="active">Act statusive</span></p>
-            <p>Last Maintenance: May 2025</p>
-          </div>
-      
-          <div class="truck-card">
-            <h3>Truck #C203</h3>
-            <p>Driver: Chioma Nwosu</p>
-            <p>Status: <span id="status" class="inactive">I statusnactive</span></p>
-            <p>Last Maintenance: March 2025</p>
-          </div>
-      
-          <div class="truck-card">
-            <h3>Truck #D054</h3>
-            <p>Driver: John Obasi</p>
-            <p>Status: <span id="status" class="active">Act statusive</span></p>
-            <p>Last Maintenance: April 2025</p>
-          </div>
-      
-          <div class="truck-card">
-            <h3>Truck #D112</h3>
-            <p>Driver: Amina Yusuf</p>
-            <p>Status: <span id="status" class="maintenance status">In Maintenance</span></p>
-            <p>Last Maintenance: July 2025</p>
-          </div>
-      
-          <div class="truck-card">
-            <h3>Truck #E301</h3>
-            <p>Driver: Victor Adebayo</p>
-            <p>Status: <span id="status" class="active">Act statusive</span></p>
-            <p>Last Maintenance: June 2025</p>
-          </div>
-      
-          <div class="truck-card">
-            <h3>Truck #F078</h3>
-            <p>Driver: Ruth Ayodele</p>
-            <p>Status: <span id="status" class="inactive">I statusnactive</span></p>
-            <p>Last Maintenance: February 2025</p>
-          </div>
-      
-          <div class="truck-card">
-            <h3>Truck #G901</h3>
-            <p>Driver: Emeka Uche</p>
-            <p>Status: <span id="status" class="active">Act statusive</span></p>
-            <p>Last Maintenance: May 2025</p>
-          </div>
-      
-          <div class="truck-card">
-            <h3>Truck #H017</h3>
-            <p>Driver: Janet Ojo</p>
-            <p>Status: <span id="status" class="maintenance">In Maintenance</span></p>
-            <p>Last Maintenance: July 2025</p>
-          </div> -->
-
+  <!-- Modal for Fleet Details -->
+  <div id="fleetModal" class="modal">
+    <div class="modal-content">
+      <span class="close" data-close="fleetModal">&times;</span>
+      <h2>Fleet Details</h2>
+      <div id="fleetModalBody"></div>
     </div>
   </div>
+
   <script src="index.js"></script>
   <script src="api.js"></script>
-
   <script>
     async function loadFleet() {
       const container = document.getElementById("fleetGrid");
-      container.innerHTML = "<p>Loading fleet data...</p>"; // temp loading message
+      container.innerHTML = "<p class='loading'>Loading fleet data...</p>";
 
       try {
-        const res = await fetch("http://localhost:8000/api/fleets/"); // change to your API URL
+        const res = await fetch("http://localhost:8000/api/fleets/");
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
-        const trucks = await res.json();
-
-        // Clear container
+        const fleets = await res.json();
         container.innerHTML = "";
 
-        trucks.forEach(truck => {
+        fleets.forEach(fleet => {
           const card = document.createElement("div");
-          card.classList.add("truck-card");
+          card.classList.add("fleet-card", fleet.status.toLowerCase());
 
           card.innerHTML = `
-                <h3>Fleet #${truck.name}</h3>
-                <p>Driver: ${truck.driver_name}</p>
-                <p>Status: <span class="${truck.status.toLowerCase()}">${truck.status}</span></p>
-                <p>Last Maintenance: ${truck.last_maintenance}</p>
-              `;
+            <div class="fleet-info">
+              <h3>${fleet.name}</h3>
+              <p><strong>Driver:</strong> ${fleet.driver_name}</p>
+              <p><strong>Vehicle:</strong> ${fleet.vehicle_type || "N/A"}</p>
+              <p><strong>Last Maintenance:</strong> ${fleet.last_maintenance}</p>
+            </div>
+            <div class="status-badge">${fleet.status}</div>
+          `;
+
+          card.addEventListener("click", () => {
+            document.getElementById("fleetModalBody").innerHTML = `
+              <p><strong>Fleet Name:</strong> ${fleet.name}</p>
+              <p><strong>Driver:</strong> ${fleet.driver_name}</p>
+              <p><strong>Vehicle:</strong> ${fleet.vehicle_type || "N/A"}</p>
+              <p><strong>Status:</strong> ${fleet.status}</p>
+              <p><strong>Last Maintenance:</strong> ${fleet.last_maintenance}</p>
+            `;
+            showModal("fleetModal");
+          });
 
           container.appendChild(card);
         });
 
       } catch (err) {
         console.error("Error loading fleet:", err);
-        container.innerHTML = "<p>Failed to load fleet data.</p>";
+        container.innerHTML = "<p class='error'>Failed to load fleet data.</p>";
       }
     }
 
-    // Load on page start
     document.addEventListener("DOMContentLoaded", loadFleet);
   </script>
-
 </body>
 
 </html>

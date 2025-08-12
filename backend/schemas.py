@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from datetime import datetime
+from typing import Optional
 
 
 class ProductBase(BaseModel):
@@ -57,6 +59,7 @@ class FleetBase(BaseModel):
     driver_id: int
     status: str
     last_maintenance: str
+    vehicle_type: str
 
 
 class FleetCreate(FleetBase):
@@ -69,3 +72,75 @@ class FleetModel(FleetBase):
 
     class Config:
         orm_mode = True
+
+
+class ReportBase(BaseModel):
+    month: str
+    title: str
+    file_url: str
+
+
+class ReportCreate(ReportBase):
+    pass
+
+
+class ReportModel(ReportBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class RouteModel(BaseModel):
+    id: int
+    name: str
+    created_at: Optional[datetime]
+
+    class Config:
+        orm_mode = True
+
+
+class ShipmentBase(BaseModel):
+    tracking_id: str
+    customer_name: str
+    route_id: int
+    status: str
+    revenue: Optional[float] = 0.0
+    shipped_at: Optional[datetime] = None
+
+
+class ShipmentCreate(ShipmentBase):
+    pass
+
+
+class ShipmentModel(ShipmentBase):
+    id: int
+    created_at: Optional[datetime]
+
+    class Config:
+        orm_mode = True
+
+
+class DashboardKPIs(BaseModel):
+    totalOrders: int
+    deliveries: int
+    pending: int
+    revenue: float
+
+
+class DashboardCharts(BaseModel):
+    months: list[str]
+    shipmentsPerMonth: list[int]
+    statusCounts: list[int]  # e.g. [delivered, delayed] or chosen mapping
+
+
+class DashboardTables(BaseModel):
+    recentShipments: list[ShipmentModel]
+    topRoutes: list[dict]  # [{"route": "Lagos → Abuja", "count": 12}, ...]
+
+
+class DashboardResponse(BaseModel):
+    kpis: DashboardKPIs
+    charts: DashboardCharts
+    tables: DashboardTables

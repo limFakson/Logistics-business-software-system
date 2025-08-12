@@ -1,38 +1,118 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Reports page styles — matches the dashboard/fleet/order styles */
+
+/* Page header */
+.page-header {
+  margin-bottom: 18px;
+}
+.page-header h1 {
+  font-size: 28px;
+  margin: 0 0 6px;
+  color: #222;
+}
+.page-header .muted {
+  color: #666;
+  font-size: 0.95rem;
 }
 
-.sidebar.sidebar.collapsed ~ .main-content {
-    margin-left: 60px;
+/* Grid layout (cards resemble other pages) */
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
 }
 
-.reports {
-    display: flex;
-    margin: 20px;
-    gap: 20px;
+/* Card */
+.report-card {
+  background: #fff;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.report-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.10);
 }
 
-.report {
-    background:  rgb(143, 99, 99) ;
-    box-shadow: 5px 5px 15px rgb(34, 33, 33);
-    color: rgb(248, 201, 201);
-    padding: 15px;
-    flex: 1;
-    flex-wrap: wrap;
-    font-size: 1.1rem;
-    display: flex;
-    justify-content: space-between;
-    border-radius: 10px;
+/* Left part (meta) */
+.report-meta {
+  display: flex;
+  flex-direction: column;
+}
+.report-title {
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 6px;
+}
+.report-desc {
+  color: #666;
+  font-size: 0.95rem;
 }
 
-.report button {
-    padding: 5px;
-    border-radius: 10px;
-    border: none;
-    background: pink;
-    color: rgb(102, 102, 64);
-    cursor: pointer;
+/* Actions */
+.report-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
+/* Buttons (consistent with other pages) */
+.btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: #fff;
+}
+.btn-primary:hover { filter: brightness(0.95); }
+
+.btn-secondary {
+  background: #f0f2f6;
+  color: #333;
+  border: 1px solid #e6e9ef;
+}
+.btn-secondary:hover { filter: brightness(0.98); }
+
+/* Modal (reuses the site modal look) */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(4px);
+}
+.modal-content.glassy {
+  background: rgba(255,255,255,0.95);
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 740px;
+  margin: 6% auto;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+  color: #222;
+}
+.modal-title {
+  margin: 0 0 10px;
+  font-size: 1.25rem;
+}
+.modal-body { font-size: 0.95rem; color: #444; }
+
+/* Small helpers */
+.muted { color: #666; }
+.error { color: #c00; font-weight: 600; }
+
+/* Responsive tweaks */
+@media (max-width: 720px) {
+  .report-actions { gap: 8px; }
+  .btn { padding: 8px 10px; font-size: 0.9rem; }
+}

@@ -1,7 +1,9 @@
 # seed_data.py
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from database import SessionLocal, engine, Base
-from models import Product, Order, Fleet, Driver
+from models import Product, Order, Fleet, Driver, Report, Route, Shipment
+from datetime import datetime, timedelta
 import random
 
 # Create all tables if they don't exist yet
@@ -32,8 +34,9 @@ def seed_data():
                 driver_id=random.choice(drivers).id,
                 status=random.choice(["active", "maintenance", "inactive"]),
                 last_maintenance="2025-08-01",
+                vehicle_type=random.choice(["Truck", "Motorcycle", "Car", "Airplane"])
             )
-            for i in range(3)
+            for i in range(4)
         ]
         db.add_all(fleets)
         db.commit()
@@ -62,8 +65,105 @@ def seed_data():
         ]
         db.add_all(orders)
         db.commit()
+        
+        months = ["June 2025", "May 2025", "April 2025", "March 2025"]
+        titles = [
+            "Revenue, Deliveries, Fleet usage",
+            "Delivery insights, Operational cost",
+            "Performance metrics, Routes summary",
+            "Customer satisfaction, Fuel efficiency"
+        ]
+        file_urls = [
+            "/reports/june2025.pdf",
+            "/reports/may2025.pdf",
+            "/reports/april2025.pdf",
+            "/reports/march2025.pdf"
+        ]
+
+        reports = [
+            Report(
+                month=random.choice(months),
+                title=random.choice(titles),
+                file_url=random.choice(file_urls),
+                created_at=datetime.utcnow()
+            )
+            for _ in range(6)
+        ]
+
+        db.add_all(reports)
+        db.commit()
 
         print("✅ Database seeded successfully!")
+    
+        ROUTES = [
+            "Lagos → Abuja",
+            "Lagos → Port Harcourt",
+            "Abuja → Kano",
+            "Onitsha → Enugu",
+            "Ibadan → Ilorin",
+            "Owerri → Uyo",
+        ]
+
+        CUSTOMERS = [
+            "Oluchi Nwankwo", "Tunde Benedicta", "Grace Miller",
+            "Killerman Sage", "Joseph Edem", "Amina Bello", "Samuel Nwachukwu"
+        ]
+
+        STATUSES = ["pending", "shipped", "delivered", "delayed"]
+
+        def random_date_within_last_months(months_back=6):
+            # pick random day in last `months_back` months
+            now = datetime.utcnow()
+            days_back = random.randint(0, months_back * 30)
+            return now - timedelta(days=days_back)
+        
+        try:
+            routes = [
+                Route(name=name)
+                for name in ROUTES
+            ]
+
+            db.add_all(routes)
+            db.commit()
+            
+            route_objs = []
+            for r in ROUTES:
+                obj = db.query(Route).filter(Route.name == r).first()
+                if not obj:
+                    obj = Route(name=r)
+                    db.add(obj)
+                    try:
+                        db.commit()
+                    except IntegrityError:
+                        db.rollback()
+                        obj = db.query(Route).filter(Route.name == r).first()
+                route_objs.append(obj)
+
+            # create shipments
+            shipments = []
+            for i in range(60):  # create 60 sample shipments
+                route = random.choice(route_objs)
+                status = random.choices(STATUSES, weights=[0.25, 0.25, 0.4, 0.1])[0]
+                shipped_at = random_date_within_last_months(6) if status != "pending" else None
+                tracking_id = f"TRK{random.randint(1000,9999)}"
+                s = Shipment(
+                    tracking_id=tracking_id,
+                    customer_name=random.choice(CUSTOMERS),
+                    route_id=route.id,
+                    status=status,
+                    revenue=round(random.uniform(50, 500), 2),
+                    shipped_at=shipped_at
+                )
+                shipments.append(s)
+
+            db.add_all(shipments)
+            db.commit()
+            print("Seeded routes & shipments")
+        except Exception as e:
+            db.rollback()
+            print("Seeding failed:", e)
+        finally:
+            db.close()
 
     except Exception as e:
         db.rollback()

@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Settings | Logistics</title>
   <link rel="stylesheet" href="SettingPage.css" />
   <link rel="stylesheet" href="nav.css" />
 </head>
-<body>
-<div class="sidebar" id="sidebar">
+
+<body class="main">
+  <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <button onclick="togglesidebar()">/|\</button>
-        <span class="app-name">LogiTrack</span>
-       </div>
-   <ul class="menu">
-    <li><a href="index.html">Dashboard</a></li>
-    <li><a href="Orderpage.html">Orders</a></li>
-    <li><a href="FleetPage.html">Fleet</a></li>
-    <li><a href="reports.html">Reports</a></li>
-    <li><a href="SettingPage.html">Settings</a></li>
-   </ul>
-</div>
-  <div class="settings-container page">
+      <button onclick="togglesidebar()">/|\</button>
+      <span class="app-name">LogiTrack</span>
+    </div>
+    <ul class="menu">
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="Orderpage.html">Orders</a></li>
+      <li><a href="FleetPage.html">Fleet</a></li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="SettingPage.html" class="active">Settings</a></li>
+    </ul>
+  </div>
+  <div class=" main-content page">
     <header>
       <h1>⚙️ Admin Settings</h1>
       <p>System configuration for LogiTrack operations</p>
@@ -117,4 +119,5 @@
   </div>
   <script src="index.js"></script>
 </body>
+
 </html>
