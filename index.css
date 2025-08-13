@@ -12,7 +12,7 @@
 .orders {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+  gap: 10px;
 }
 
 .order {
@@ -110,3 +110,4 @@
   background: #f8d7da;
   color: #721c24;
 }
+
