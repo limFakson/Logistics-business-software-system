@@ -41,6 +41,7 @@ body {
   align-items: center;
   gap: 12px;
   margin-bottom: 30px;
+  padding-left: 8px;
 }
 
 .sidebar-header button {
@@ -54,6 +55,7 @@ body {
   font-size: 20px;
   font-weight: bold;
   color: #007bff;
+  padding-left: 0.8rem;
 }
 
 .menu li {
@@ -99,5 +101,6 @@ body {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
+
 
 }
